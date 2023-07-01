@@ -14,6 +14,7 @@ from yaml.loader import SafeLoader
 conn = sqlite3.connect("concert.db")
 c = conn.cursor()
 
+
 def show_database_data():
   
     st.title("Base de données des clients")
@@ -45,31 +46,16 @@ def show_database_data():
 
     # Check authentication status
 
-def creds_entered():
-    if st.session_state["user"].strip()=="admin" and st.session_state["passwd"].strip()=="chacal":
-        st.session_state["authenticated"]=True
+
+st.title("Login")
+tentative_pass=st.text_input("Password",type="password")
+
+if tentative_pass:
+    if tentative_pass==st.secrets["SECRET_KEY"]:
+        show_database_data()
     else:
-        st.session_state["authenticated"]=False
-        if not st.session_state["passwd"]:
-            st.warning("Entrez un mot de passe")
-        elif not st.session_state["user"]:
-            st.warning("Entrez un nom d'utilisateur")
-        else:
+        st.warning("Mot de passe incorrect")
+    
         
-            st.error("invalid username password chacal")
-def authenticate_user():
-    if "authenticated" not in st.session_state:
 
-        st.text_input(label="Username:",value="",key="user",on_change=creds_entered)
-        st.text_input(label="Password:",value="",key="passwd",type="password",on_change=creds_entered)
-        return False
-    else:
-        if st.session_state["authenticated"]:
-            return True
-        else:
-            st.text_input(label="Username:",value="",key="user",on_change=creds_entered)
-            st.text_input(label="Password:",value="",key="passwd",type="password",on_change=creds_entered)
-            return False
 
-if authenticate_user():
-    show_database_data()

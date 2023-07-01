@@ -17,8 +17,6 @@ import pickle
 from pathlib import Path
 import streamlit_authenticator as stauth
 
-
-
 # Créer une connexion à la base de données (création si elle n'existe pas)
 conn = sqlite3.connect("concert.db")
 c = conn.cursor()
@@ -64,6 +62,12 @@ def generate_pdf(data):
     qr_img_stream = BytesIO(qr_img_data)
     qr_img_obj = Image.open(qr_img_stream)
     pdf_canvas.drawInlineImage(qr_img_obj, x=100, y=600, width=200, height=200)
+
+    # Insérer l'image dans le PDF
+    image_path = "test.jpg"  # Remplacez par le chemin de votre image
+    image = Image.open(image_path)
+    image = image.resize((200, 200))  # Redimensionnez selon vos besoins
+    pdf_canvas.drawInlineImage(image, x=350, y=600, width=200, height=200)
 
     # Autres informations dans le PDF
     pdf_canvas.setFont("Helvetica", 12)
@@ -138,7 +142,7 @@ def main():
         # Générer les données du ticket
         ticket_data = f"ID client : {client_id}\nNom : {name}\nEmail : {email}\nNuméro de téléphone : {phone}\nÂge : {age}\nSexe : {gender}\nDate et heure : {timestamp}"
 
-        # Générer le PDF avec le QR code
+        # Générer le PDF avec le QR code et l'image
         pdf_data = generate_pdf(ticket_data)
 
         # Envoyer le PDF par e-mail
